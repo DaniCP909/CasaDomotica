@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">AppDomotica</string>
+    <string name="lightning">ILUMINACIÓN</string>
+    <string name="heating">CALEFACCIÓN</string>
+    <string name="blinds">PERSIANAS</string>
+    <string name="air_conditioning">VENTILACIÓN</string>
+    <string name="security">SEGURIDAD</string>
+
+    <string name="int_light">LUZ INTERIOR</string>
+    <string name="ext_light">LUZ INTERIOR</string>
+</resources>
