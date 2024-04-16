@@ -66,12 +66,12 @@ void comunicacion(){
 
    if(c=='N'){
       digitalWrite(pinLed, HIGH);
-      s.write("N");
+      s.write("O");
 
     }if(c=='F'){
       digitalWrite(pinLed, LOW);
-      s.write("F");
-    }
+      s.write("O");
+    } 
   if(c=='L'){
     enciendeLuzLDR();
     if(valorLDR<300){
