@@ -72,7 +72,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonAirConditioning"
-        app:layout_constraintVertical_bias="0.625" />
+        app:layout_constraintVertical_bias="0.112" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
