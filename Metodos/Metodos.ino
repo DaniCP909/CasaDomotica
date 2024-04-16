@@ -1,8 +1,11 @@
 #include <DHT.h>
+#include <SoftwareSerial.h>
+#include <string.h>
 
 #define DHTPIN 2     // Pin digital donde está conectado el sensor DHT11
 #define DHTTYPE DHT11   // Tipo de sensor DHT utilizado
 
+SoftwareSerial s(5,6);//RX,TX
 const int ldrPin = A0;  // Pin analógico donde está conectado el LDR
 const int ledPin = 3;    // Pin PWM donde está conectado el LED
 const int calefactor = 6; // Pin PWM donde está conectado el LED
@@ -11,6 +14,7 @@ const int aire = 11 ; // motor aire acondicionado
 const int led = 13 ;
 const int sensor = 3; //sensor PIN
 int val; // variable aux
+
 
 #define E1 10  // Enable Pin for motor 1
 #define I1 8     // Control pin 1 for motor 1
@@ -33,11 +37,13 @@ void setup() {
   pinMode(sensor, INPUT);
 
   Serial.begin(9600);
+  s.begin(9600);
   dht.begin(); 
 
 }
 
 void loop() {
+  comunicacion();
   enciendeLedLDR();
   enciendeCalefactor();
 
@@ -54,8 +60,41 @@ void loop() {
 
 }
 
+void comunicacion(){
+  if(s.available()>0){
+  char c =s.read();
+
+   if(c=='N'){
+      digitalWrite(pinLed, HIGH);
+      s.write("N");
+
+    }if(c=='F'){
+      digitalWrite(pinLed, LOW);
+      s.write("F");
+    }
+  if(c=='L'){
+    enciendeLuzLDR();
+    if(valorLDR<300){
+      s.write("N");
+    }else{
+      s.write("F");
+    }
+  }
+ }
+}
+
+void enciendeIluminacion(){
+      digitalWrite(pinLed, HIGH);
+      s.write("N");
+}
+
+void apagarIluminacion(){
+   digitalWrite(pinLed, LOW);
+      s.write("F");
+}
+
 void enciendeLedLDR(){
-   static int lastBrightness = 0;
+  static int lastBrightness = 0;
   int ldrValue = analogRead(ldrPin);  // Leer el valor del LDR
   int brightness = map(ldrValue, 100, 600, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
   if(ldrValue >600) {
