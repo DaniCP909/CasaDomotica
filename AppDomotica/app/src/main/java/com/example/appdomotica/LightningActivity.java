@@ -13,8 +13,8 @@ public class LightningActivity extends AppCompatActivity {
 
     private HttpRequestHandler httpRequestHandler = new HttpRequestHandler();
 
-    private Boolean ints_on;
-    private Boolean exts_on;
+    //private Boolean ints_on;
+    //private Boolean exts_on;
 
     Button buttonIntLight;
     Button buttonExtLight;
@@ -24,8 +24,8 @@ public class LightningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lightning);
 
-        ints_on = false;
-        exts_on = false;
+        //ints_on = false;
+        //exts_on = false;
 
         buttonIntLight = findViewById(R.id.buttonIntLight);
         buttonExtLight = findViewById(R.id.buttonExtLight);
@@ -33,10 +33,10 @@ public class LightningActivity extends AppCompatActivity {
         buttonIntLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String command = "int_light_";
+                String command = "LI";
 
-                if(ints_on) command += "off";
-                else command += "on";
+                //if(ints_on) command += "off";
+                //else command += "on";
 
                 httpRequestHandler.sendCommand(command,  new HttpRequestHandler.ResponseCallback() {
                     @Override
@@ -48,13 +48,13 @@ public class LightningActivity extends AppCompatActivity {
             }
         });
 
-        buttonIntLight.setOnClickListener(new View.OnClickListener() {
+        buttonExtLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String command = "ext_light_";
+                String command = "LE";
 
-                if(ints_on) command += "off";
-                else command += "on";
+                //if(ints_on) command += "off";
+                //else command += "on";
 
                 httpRequestHandler.sendCommand(command,  new HttpRequestHandler.ResponseCallback() {
                     @Override

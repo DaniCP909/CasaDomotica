@@ -22,6 +22,7 @@
         android:layout_width="240dp"
         android:layout_height="61dp"
         android:text="Modo fuera de casa"
+        android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
