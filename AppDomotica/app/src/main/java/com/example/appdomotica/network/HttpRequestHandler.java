@@ -11,6 +11,16 @@ import okhttp3.Response;
 public class HttpRequestHandler {
 
     private OkHttpClient client = new OkHttpClient();
+    private static HttpRequestHandler handler;
+
+    private HttpRequestHandler(){}
+
+    public static HttpRequestHandler getInstance(){
+        if(handler == null){
+            handler = new HttpRequestHandler();
+        }
+        return handler;
+    }
 
     public interface ResponseCallback {
         void onResponse(String response);
