@@ -11,6 +11,14 @@ SoftwareSerial s(D6,D5);//TX,RX
 const char* ssid = "NODE_MCU_AP";
 const char* password = "nodemcuadmin";
 WiFiServer server(80);
+String all_command = "";
+
+
+bool luzInterna = false;
+bool persiana = false;
+bool ventilacion = false;
+bool seguridad = false;
+bool calefaccion = false;
 
 void setup() {
   Serial.begin(115200);
@@ -29,11 +37,12 @@ void setup() {
 
 void loop() {
 
-  String all_command = "";
+  
 
   WiFiClient client = server.available();
-
+  respuesta();
   if (client) {
+    Serial.println(client);
     String request = "";
     while (client.connected()) {
       if (client.available()) {
@@ -63,21 +72,21 @@ void loop() {
 
           if (command.equals("LI")) {
             //digitalWrite(GREEN, HIGH);
-            comunicacion('LI');
+            comunicacion("LI");
             all_command =  "Luz interna encendida";
             //all_command =  "Luz interna apagada";
           }
 
           if (command.equals("PE")) {
             //digitalWrite(GREEN, HIGH);
-            comunicacion('PE');
+            comunicacion("PE");
             //all_command =  "Persiana subiendo";
             //all_command =  "Persiana bajando";
           }
 
           if (command.equals("VE")) {
             //digitalWrite(GREEN, HIGH);
-            comunicacion('VE');
+            comunicacion("VE");
             //all_command =  "Ventilación activada";
             //all_command =  "Ventilación desactivada";
           }
@@ -85,7 +94,7 @@ void loop() {
           //SEguridad oN
           if (command.equals("SEN")) {
             //digitalWrite(GREEN, HIGH);
-            comunicacion('SEN');
+            comunicacion("SEN");
             //all_command =  "Ventilación activada";
             //all_command =  "Ventilación desactivada";
           }
@@ -93,14 +102,14 @@ void loop() {
           //SEguridad oFf
           if (command.equals("SEF")) {
             //digitalWrite(GREEN, HIGH);
-            comunicacion('SEF');
+            comunicacion("SEF");
             //all_command =  "Ventilación activada";
             //all_command =  "Ventilación desactivada";
           }
 
           if (command.equals("CA")) {
             //digitalWrite(GREEN, HIGH);
-            comunicacion('CA');
+            comunicacion("CA");
             //all_command =  "Calefacción activada";
             //all_command =  "Calefacción desactivada";
           }
@@ -134,15 +143,19 @@ void loop() {
   }
 }
 
-void comunicacion(char data){
-   s.write(data);
-  
-
-
+void comunicacion(String data){
+  for (int i = 0; i < data.length(); i++)
+    {
+      s.write(data[i]); 
+      Serial.println(data[i]);
+    }
+}
+void respuesta(){
+  String cadenaEntrada="";
   if(s.available()){
-    char c =s.read();
+    cadenaEntrada = s.readStringUntil('\n');
 
-    if(c=='O'){
+    if(cadenaEntrada=="OK"){
       digitalWrite(D4, HIGH);
       delay(500);
       digitalWrite(D4, LOW);
@@ -151,20 +164,20 @@ void comunicacion(char data){
       delay(500);
       digitalWrite(D4, LOW);
       delay(500);
-      
-
-
+    }
+    if(cadenaEntrada=="LOF"){
+      all_command =  "Luz interna apagada";
+      luzInterna=false;
+    }
+    if(cadenaEntrada=="LON"){
+      all_command =  "Luz interna encendida";
+      luzInterna=true;
     }
 
-    if(c=='N'){
-      digitalWrite(D4, HIGH);
-
-    }if(c=='F'){
-      digitalWrite(D4, LOW);
-    }
+    Serial.println(all_command);
     
-    //data=s.read();
-    Serial.println(c);
+
+    
   }
   delay(500);
 }

@@ -5,24 +5,51 @@
 #define DHTPIN 2     // Pin digital donde está conectado el sensor DHT11
 #define DHTTYPE DHT11   // Tipo de sensor DHT utilizado
 
-SoftwareSerial s(5,6);//RX,TX
-const int ldrPin = A0;  // Pin analógico donde está conectado el LDR
-const int ledPin = 3;    // Pin PWM donde está conectado el LED
-const int calefactor = 6; // Pin PWM donde está conectado el LED
-const int aire = 11 ; // motor aire acondicionado
+//Analogicos
+const int ldrPin1 = A0;  // Pin analógico donde está conectado el LDR
+const int ldrPin2 = A1;  // Pin analógico donde está conectado el LDR
+const int co2 = A15;
 
-const int led = 13 ;
-const int sensor = 3; //sensor PIN
-int val; // variable aux
+int iman;
 
 
+//Digitales
+#define DHTPIN 31     // Pin digital donde está conectado el sensor DHT11
+#define DHTTYPE DHT11   // Tipo de sensor DHT utilizado
+const int calefactor = 3; // Pin donde esta conectado el sistema de calefacción
+
+#define pirPin 40 //Sensor de movimiento
+
+const int ledPin = 11;   // Pin PWM donde está conectado el LED de la luz externa
+
+SoftwareSerial s(50,51);  //RX,TX Comunicación entre placas
+
+const int ventilador = 47 ; // motor aire acondicionado
+
+//MOTOR PERSIANA 
 #define E1 10  // Enable Pin for motor 1
 #define I1 8     // Control pin 1 for motor 1
 #define I2 9     // Control pin 2 for motor 1
 
+const int ledInterior = 4;
+
+
+int val; // variable aux
+
+
+
 bool bajar =true;
+bool motionState = false ;
 DHT dht(DHTPIN, DHTTYPE);
 
+bool luzInterna = false; //luz apagada;
+bool AutoLI = false;
+bool persiana = false;  //persiana bajada
+bool autventilacion= false;
+bool ventilacion = false; //ventilacion apagada
+bool seguridad = false; //seguridad apagada
+bool calefaccion = false; //calefaccion apagada
+bool AutoCa = false;
 
 
 void setup() {
@@ -30,11 +57,12 @@ void setup() {
   pinMode(calefactor, OUTPUT);  // Configurar el pin del LED como salida
   for (int i = 8 ; i<11 ; i++)                     // Inicializamos los pines del motor
   pinMode( i, OUTPUT);
+  pinMode(ledInterior, OUTPUT);
 
-  pinMode(aire,  OUTPUT) ;
+  pinMode(ventilador,  OUTPUT) ;
+  pinMode(movimiento, INPUT);
 
-  pinMode(led, OUTPUT);
-  pinMode(sensor, INPUT);
+   pinMode(co2, INPUT);
 
   Serial.begin(9600);
   s.begin(9600);
@@ -43,59 +71,107 @@ void setup() {
 }
 
 void loop() {
-  comunicacion();
-  enciendeLedLDR();
-  enciendeCalefactor();
+  comunicacion();//analogWrite (ledInterior,  255);
+  //movimiento();
 
-  if(bajar){
-    bajarMotor();
-  }else{
-    subirMotor();
-  }
+  delay(100);
 
-  delay(3000);
-  aireAcondicionado();
-  delay(5000);
-  segIman();
 
 }
 
+void leeriman(){
+  iman = analogRead(A8);
+  Serial.println(iman);
+  delay(500);
+}
+
 void comunicacion(){
+  String cadenaEntrada="";
+  String cadenaSalida="";
+
   if(s.available()>0){
-  char c =s.read();
+  cadenaEntrada = s.readStringUntil('\n');
+  Serial.println(cadenaEntrada);
 
-   if(c=='N'){
-      digitalWrite(pinLed, HIGH);
-      s.write("O");
-
-    }if(c=='F'){
-      digitalWrite(pinLed, LOW);
-      s.write("O");
-    } 
-  if(c=='L'){
-    enciendeLuzLDR();
-    if(valorLDR<300){
-      s.write("N");
+  if(cadenaEntrada=="LI"){ //Luz interior
+    Serial.println("Luz Interior");
+    if(luzInterna){
+      apagaIlumniacionInterior();
+      Serial.println("Apago");
     }else{
-      s.write("F");
+      enciendeIlumniacionInterior();
+      Serial.println("Enciendo");
+
+    }
+    
+  }
+
+  if(cadenaEntrada=="PE"){//Persiana
+    if(persiana){
+      bajarPersiana();
+      persiana=false;
+      comBack("PEF");
+    }else{
+      subirPersiana();
+      persiana=true;
+      comBack("PEN");
+    }
+  }
+  if(cadenaEntrada=="VE"){//Ventilación
+  if(!autventilacion)
+    if(ventilacion){
+      analogWrite (ventilador,  0);
+      ventilacion= false;
+    }else{
+      analogWrite (ventilador,  255);
+      ventilacion=true;
+    }
+  }
+  if(cadenaEntrada=="SEN"){//Seguridad ON
+    seguridadON();
+    seguridad= true;
+  }
+  if(cadenaEntrada=="SEF"){//Seguridad OFF
+    seguridadOFF();
+    seguridad = false;
+  }
+  if(cadenaEntrada=="CA"){//Calefacción
+    if(calefaccion){
+      analogWrite (calefactor,  LOW);
+      calefaccion=false;
+    }else{
+      analogWrite (calefactor,  HIGH);
+      calefaccion=true;
     }
   }
  }
 }
 
-void enciendeIluminacion(){
-      digitalWrite(pinLed, HIGH);
-      s.write("N");
+void comBack(String data){
+    for (int i = 0; i < data.length(); i++)
+    {
+      s.write(data[i]); 
+    }
 }
 
-void apagarIluminacion(){
-   digitalWrite(pinLed, LOW);
-      s.write("F");
+
+void enciendeIlumniacionInterior(){
+      digitalWrite(ledInterior, HIGH);
+      luzInterna=true;
+      comBack("LON");
 }
 
-void enciendeLedLDR(){
+void apagaIlumniacionInterior(){
+      digitalWrite(ledInterior, LOW);
+      luzInterna=false;
+      comBack("LOF");
+}
+void seguridadON(){}
+void seguridadOFF(){}
+
+void automaticoExterno(){
   static int lastBrightness = 0;
-  int ldrValue = analogRead(ldrPin);  // Leer el valor del LDR
+  int ldrValue = analogRead(ldrPin1);  // Leer el valor del LDR
   int brightness = map(ldrValue, 100, 600, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
   if(ldrValue >600) {
     analogWrite(ledPin, LOW); 
@@ -114,7 +190,7 @@ void enciendeLedLDR(){
   delay(100);  // Pequeña pausa para evitar lecturas demasiado rápidas
 }
 
-void enciendeCalefactor(){
+void calefactorAutomatico(){
    float temperature = dht.readTemperature();  // Leer la temperatura
   float humidity = dht.readHumidity();        // Leer la humedad
 
@@ -144,7 +220,7 @@ void enciendeCalefactor(){
 }
 
 
-void bajarMotor() {
+void bajarPersiana() {
 
     digitalWrite(E1, HIGH);     // Activamos Motor1
     digitalWrite(I1, HIGH);     // Arrancamos
@@ -157,7 +233,7 @@ void bajarMotor() {
     bajar= false;
   }
 
-  void subirMotor() {
+  void subirPersiana() {
     digitalWrite(E1, HIGH);     // Activamos Motor1
     digitalWrite(I1, LOW);      // Arrancamos con cambio de direccion
     digitalWrite(I2, HIGH);
@@ -170,27 +246,52 @@ void bajarMotor() {
 
   }
 
-  void aireAcondicionado(){
+  void aireAcondicionadoAutomatico(){
             for ( int n = 0 ; n < 255 ; n++)
           {
-              analogWrite (aire,  n) ;
+              analogWrite (ventilador,  n) ;
               delay(15) ; //Tarda 3,825
           }
-          analogWrite (aire,  0) ;
+          analogWrite (ventilador,  0) ;
           Serial.println("Airee");
   }
 
-void segIman(){
-  val = digitalRead(sensor);
-  if(val=LOW){
-    digitalWrite(led,HIGH);
-          Serial.println("Detectado");
+  void movimiento(){
+    val = digitalRead(pirPin);
+    if (val == HIGH) {
+      digitalWrite(ledInterior, HIGH); 
+      if (motionState == false) {
+        Serial.println("¡Movimiento detectado!");  
+        motionState = true;
+      }
+    }
+    else {
+      digitalWrite(ledInterior, LOW); 
+      if (motionState == true) {
+        Serial.println("¡Movimiento finalizado!");
+        motionState = false;
+      }
+    }
+  }
 
-  }else{
-    digitalWrite(led,LOW);
-          Serial.println("Din Detectar");
+void automaticoCO2(){
+    int sensorData = analogRead(co2);
+  Serial.print("Calidad de Aire:");
+  Serial.print(sensorData, DEC);
+  Serial.println(" PPM");
+  delay(100);
 
+	if (sensorData > 120.0){
 
+    //Activamos motor velocidad 200
+		analogWrite(ventilador, 200);
+
+    delay(3000);
+	}
+  else {
+    //Paramos motor
+    analogWrite(ventilador, 0);
   }
 }
+
 
