@@ -11,7 +11,7 @@ import com.example.appdomotica.network.HttpRequestHandler;
 
 public class HeatingActivity extends AppCompatActivity {
 
-    private HttpRequestHandler httpRequestHandler = new HttpRequestHandler();
+    private HttpRequestHandler httpRequestHandler = HttpRequestHandler.getInstance();
 
     Button buttonHeating;
 

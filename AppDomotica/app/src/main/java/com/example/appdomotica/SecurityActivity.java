@@ -12,7 +12,7 @@ import com.example.appdomotica.network.HttpRequestHandler;
 
 public class SecurityActivity extends AppCompatActivity {
 
-    private HttpRequestHandler httpRequestHandler = new HttpRequestHandler();
+    private HttpRequestHandler httpRequestHandler = HttpRequestHandler.getInstance();
     SwitchCompat switch2;
 
     @Override
@@ -41,6 +41,7 @@ public class SecurityActivity extends AppCompatActivity {
                 });
             }
         });
+        switch2.setOnClickListener();
     }
 
 }
