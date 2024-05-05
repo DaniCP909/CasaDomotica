@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".LightningActivity">
 
+
     <Button
         android:id="@+id/buttonIntLight"
         android:layout_width="wrap_content"
@@ -36,4 +37,31 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switchIntLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Automatico Luz Interior"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toTopOf="@+id/buttonExtLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonIntLight"
+        app:layout_constraintVertical_bias="0.07" />
+
+    <Switch
+        android:id="@+id/switchExtLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="Automatico Luz Exterior"
+        android:onClick="onClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonExtLight" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

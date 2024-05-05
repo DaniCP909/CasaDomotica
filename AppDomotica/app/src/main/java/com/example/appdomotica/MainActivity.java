@@ -3,6 +3,7 @@ package com.example.appdomotica;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Button;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -13,13 +14,18 @@ import android.os.Bundle;
 import android.view.View;
 
 
-public class MainActivity extends AppCompatActivity {
+import com.example.appdomotica.network.HttpRequestHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+
+public class MainActivity extends AppCompatActivity {
+    private HttpRequestHandler httpRequestHandler = HttpRequestHandler.getInstance();
     Button buttonLightning;
     Button buttonHeating;
     Button buttonBlinds;
     Button buttonAirConditioning;
     Button buttonSecurity;
+    FloatingActionButton buttonReset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +45,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         buttonLightning = findViewById(R.id.buttonLightning);
         buttonHeating = findViewById(R.id.buttonHeating);
         buttonBlinds = findViewById(R.id.buttonBlinds);
         buttonAirConditioning = findViewById(R.id.buttonAirConditioning);
         buttonSecurity = findViewById(R.id.buttonSecurity);
+        buttonReset = findViewById(R.id.buttonReset);
 
         buttonLightning.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +91,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent securityActivity = new Intent(v.getContext(), SecurityActivity.class);
                 startActivity(securityActivity);
+            }
+        });
+
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String command = "RE";
+
+                //if(ints_on) command += "off";
+                //else command += "on";
+
+                httpRequestHandler.sendCommand(command,  new HttpRequestHandler.ResponseCallback() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the response here, e.g., update UI
+                        Log.d("Response", response);
+                    }
+                });
             }
         });
 

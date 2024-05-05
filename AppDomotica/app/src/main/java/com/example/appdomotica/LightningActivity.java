@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.example.appdomotica.network.HttpRequestHandler;
 
@@ -23,6 +25,8 @@ public class LightningActivity extends AppCompatActivity {
 
     Button buttonIntLight;
     Button buttonExtLight;
+    Switch switchIntLight;
+    Switch switchExtLight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,8 @@ public class LightningActivity extends AppCompatActivity {
 
         buttonIntLight = findViewById(R.id.buttonIntLight);
         buttonExtLight = findViewById(R.id.buttonExtLight);
+        switchIntLight = findViewById(R.id.switchIntLight);
+        switchExtLight = findViewById(R.id.switchExtLight);
 
         buttonIntLight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +72,7 @@ public class LightningActivity extends AppCompatActivity {
             }
         });
 
+
         buttonExtLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +80,47 @@ public class LightningActivity extends AppCompatActivity {
 
                 //if(ints_on) command += "off";
                 //else command += "on";
+
+                httpRequestHandler.sendCommand(command,  new HttpRequestHandler.ResponseCallback() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the response here, e.g., update UI
+                        Log.d("Response", response);
+                    }
+                });
+            }
+        });
+
+        switchIntLight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String command;
+                if(isChecked) {
+                    command = "LIAN";
+                }
+                else {
+                    command = "LIAF";
+                }
+
+                httpRequestHandler.sendCommand(command,  new HttpRequestHandler.ResponseCallback() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the response here, e.g., update UI
+                        Log.d("Response", response);
+                    }
+                });
+            }
+        });
+        switchExtLight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String command;
+                if(isChecked) {
+                    command = "LEAN";
+                }
+                else {
+                    command = "LEAF";
+                }
 
                 httpRequestHandler.sendCommand(command,  new HttpRequestHandler.ResponseCallback() {
                     @Override

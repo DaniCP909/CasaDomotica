@@ -41,7 +41,6 @@ public class SecurityActivity extends AppCompatActivity {
                 });
             }
         });
-        switch2.setOnClickListener();
     }
 
 }

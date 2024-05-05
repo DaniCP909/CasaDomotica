@@ -67,64 +67,55 @@ void loop() {
 
           Serial.println(command);
 
-          all_command =  command + " is on";  // green is on 
-
 
           if (command.equals("LI")) {
-            //digitalWrite(GREEN, HIGH);
             comunicacion("LI");
-            all_command =  "Luz interna encendida";
-            //all_command =  "Luz interna apagada";
+          }
+          if (command.equals("LIAF")) {
+            comunicacion("LIAF");
+          }
+          if (command.equals("LIAN")) {
+            comunicacion("LIAN");
+          }
+          
+          if (command.equals("LE")) {
+            comunicacion("LE");
+          }
+          if (command.equals("LEAF")) {
+            comunicacion("LEAF");
+          }
+          if (command.equals("LEAN")) {
+            comunicacion("LEAN");
           }
 
           if (command.equals("PE")) {
-            //digitalWrite(GREEN, HIGH);
             comunicacion("PE");
-            //all_command =  "Persiana subiendo";
-            //all_command =  "Persiana bajando";
           }
 
           if (command.equals("VE")) {
-            //digitalWrite(GREEN, HIGH);
             comunicacion("VE");
-            //all_command =  "Ventilación activada";
-            //all_command =  "Ventilación desactivada";
           }
 
           //SEguridad oN
           if (command.equals("SEN")) {
-            //digitalWrite(GREEN, HIGH);
             comunicacion("SEN");
-            //all_command =  "Ventilación activada";
-            //all_command =  "Ventilación desactivada";
+
           }
 
           //SEguridad oFf
           if (command.equals("SEF")) {
-            //digitalWrite(GREEN, HIGH);
             comunicacion("SEF");
-            //all_command =  "Ventilación activada";
-            //all_command =  "Ventilación desactivada";
           }
 
           if (command.equals("CA")) {
-            //digitalWrite(GREEN, HIGH);
             comunicacion("CA");
-            //all_command =  "Calefacción activada";
-            //all_command =  "Calefacción desactivada";
+
           }
 
-          //if (command.equals("green_on")) {
-          //  //digitalWrite(GREEN, HIGH);
-          //  comunicacion('N');
-          //  all_command =  "green is on";
-          //}
-//
-          //if (command.equals("green_off")) {
-          //  //digitalWrite(GREEN, LOW);
-          //  comunicacion('F');
-          //  all_command =  "green is off";
-          //}
+          if (command.equals("RE")) {
+            comunicacion("RE");
+          }
+
 
 
 
@@ -173,6 +164,24 @@ void respuesta(){
       all_command =  "Luz interna encendida";
       luzInterna=true;
     }
+    if(cadenaEntrada=="LEOF"){
+      all_command =  "Luz externa apagada";
+      luzInterna=false;
+    }
+    if(cadenaEntrada=="LEON"){
+      all_command =  "Luz externa encendida";
+      luzInterna=true;
+    }
+    if(cadenaEntrada=="ALE"){
+      all_comand= "Automatico luz externa activado";
+    }
+    if(cadenaEntrada=="ALI"){
+      all_comand= "Automatico luz interna activado";
+    }
+
+
+    String commandWithTags = "<html><body>" + all_command + "</body></html>";
+    client.println(commandWithTags);
 
     Serial.println(all_command);
     
@@ -181,4 +190,5 @@ void respuesta(){
   }
   delay(500);
 }
+
 
