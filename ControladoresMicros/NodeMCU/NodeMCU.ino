@@ -173,15 +173,15 @@ void respuesta(){
       luzInterna=true;
     }
     if(cadenaEntrada=="ALE"){
-      all_comand= "Automatico luz externa activado";
+      all_command= "Automatico luz externa activado";
     }
     if(cadenaEntrada=="ALI"){
-      all_comand= "Automatico luz interna activado";
+      all_command= "Automatico luz interna activado";
     }
 
 
-    String commandWithTags = "<html><body>" + all_command + "</body></html>";
-    client.println(commandWithTags);
+    //String commandWithTags = "<html><body>" + all_command + "</body></html>";
+    //client.println(commandWithTags);
 
     Serial.println(all_command);
     

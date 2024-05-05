@@ -132,14 +132,14 @@ void comunicacion(){
         enciendeIlumniacionInterior();
       }
     }else{
-      comBack("ALI")
+      comBack("ALI");
     }
   }
-  if(cadenaEntrada= "LIAN"){
+  if(cadenaEntrada=="LIAN"){
     AutoLI=true; 
     automaticoInterno();
   }  
-  if(cadenaEntrada= "LIAF"){
+  if(cadenaEntrada=="LIAF"){
     AutoLI=false; 
   }
 
@@ -156,12 +156,12 @@ void comunicacion(){
     }
     
   }
-   if(cadenaEntrada= "LEAN"){
-    AutoLI=true; 
+   if(cadenaEntrada=="LEAN"){
+    AutoLE=true; 
     automaticoExterno();
   }  
-  if(cadenaEntrada= "LEAF"){
-    AutoLI=false; 
+  if(cadenaEntrada=="LEAF"){
+    AutoLE=false; 
   }
 
   if(cadenaEntrada=="PE"){//Persiana
@@ -253,9 +253,9 @@ void automaticoInterno(){
   
   int ldrValue = min(ldrValue1,ldrValue2);
 
-  int brightness = map(ldrValue, 100, 600, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
+  int brightness = map(ldrValue, 1000, 300, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
 
-  if(ldrValue1 >600) {
+  if(ldrValue < 300) {
     analogWrite(ledInterior1, LOW);
     analogWrite(ledInterior2, LOW); 
     analogWrite(ledInterior3, LOW); 
@@ -302,10 +302,10 @@ void automaticoExterno(){
   int ldrValue2 = analogRead(ldrPin2);  // Leer el valor del LDR 1
 
 
-  int brightness1 = map(ldrValue1, 100, 600, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
-  int brightness2 = map(ldrValue2, 100, 600, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
+  int brightness1 = map(ldrValue1, 1000, 300, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
+  int brightness2 = map(ldrValue2, 1000, 300, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
 
-  if(ldrValue1 >600) {
+  if(ldrValue1 < 300) {
     analogWrite(ledExterior1, LOW); 
     lastBrightness1 = 0;
   }else{
@@ -313,7 +313,7 @@ void automaticoExterno(){
       lastBrightness1 = brightness1;
   }
 
-  if(ldrValue2 >600) {
+  if(ldrValue2 < 300) {
     analogWrite(ledExterior2, LOW); 
     lastBrightness2 = 0;
   }else{
@@ -345,7 +345,6 @@ void calefactorAutomatico(){
 
   // Mapear la temperatura y la humedad a valores de brillo del LED
   int brightness = map(temperature, 20, 50, 255, 0);  // Suponiendo que la temperatura oscila entre 0°C y 40°C
-  int humBrightness = map(humidity, 20, 80, 0, 255);     // Suponiendo que la humedad oscila entre 20% y 80%
 
   // Tomar el brillo máximo entre la temperatura y la humedad
   //int brightness = max(tempBrightness, humBrightness);
