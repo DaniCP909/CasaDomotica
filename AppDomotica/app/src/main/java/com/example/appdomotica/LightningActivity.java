@@ -52,8 +52,8 @@ public class LightningActivity extends AppCompatActivity {
 
         buttonIntLight = findViewById(R.id.buttonIntLight);
         buttonExtLight = findViewById(R.id.buttonExtLight);
-        switchIntLight = findViewById(R.id.switchIntLight);
-        switchExtLight = findViewById(R.id.switchExtLight);
+        switchIntLight = (SwitchCompat) findViewById(R.id.switchIntLight);
+        switchExtLight = (SwitchCompat) findViewById(R.id.switchExtLight);
 
         buttonIntLight.setOnClickListener(new View.OnClickListener() {
             @Override
