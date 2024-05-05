@@ -1,6 +1,7 @@
 package com.example.appdomotica;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -25,8 +26,8 @@ public class LightningActivity extends AppCompatActivity {
 
     Button buttonIntLight;
     Button buttonExtLight;
-    Switch switchIntLight;
-    Switch switchExtLight;
+    SwitchCompat switchIntLight;
+    SwitchCompat switchExtLight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
