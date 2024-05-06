@@ -22,7 +22,7 @@ const int co2 = A15;  //Pin analógivo donde está el sensor de CO2
 DHT dht1(DHTPIN1, DHTTYPE1);
 DHT dht2(DHTPIN2, DHTTYPE2);
 
-const int calefactor = 48; // Pin donde esta conectado el sistema de calefacción
+const int calefactor = 40; // Pin donde esta conectado el sistema de calefacción
 
 #define pirPin 40 //Sensor de movimiento
 const int ventilador = 47 ; // motor aire acondicionado
@@ -204,12 +204,12 @@ void comunicacion(){
   }
   if(cadenaEntrada=="CA"){//Calefacción
     Serial.println("Calefaccion");
-    if(AutoCA){
+    if(!AutoCA){
       if(calefaccion){
-        analogWrite (calefactor,  LOW);
+        analogWrite (calefactor,  0);
         calefaccion=false;
       }else{
-        analogWrite (calefactor,  HIGH);
+        analogWrite (calefactor,  200);
         calefaccion=true;
       }
     }
@@ -251,7 +251,7 @@ void automaticoInterno(){
   int ldrValue1 = analogRead(ldrPin1);  // Leer el valor del LDR 1
   int ldrValue2 = analogRead(ldrPin2);  // Leer el valor del LDR 1
   
-  int ldrValue = min(ldrValue1,ldrValue2);
+  int ldrValue = max(ldrValue1,ldrValue2);
 
   int brightness = map(ldrValue, 1000, 300, 255, 0);  // Mapear el valor del LDR al rango de PWM (0-255)
 
